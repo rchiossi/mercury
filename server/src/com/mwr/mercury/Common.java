@@ -18,7 +18,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -30,31 +29,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
-//A class to wrap arguments in
-class ArgumentWrapper
-{
-	public String type;
-	public byte[] value;
-}
-
-//An interface to use in CommandWrapper to better define Commands
-interface Executor { public void execute(List<ArgumentWrapper> argsArray, Session currentSession); }
-
-//A class to wrap commands and their implementations inside
-class CommandWrapper
-{
-	public String section;
-	public String function;
-	public Executor executor;
-	
-	public CommandWrapper(String inputSection, String inputFunction, Executor inputExecutor)
-	{
-		section = inputSection;
-		function = inputFunction;
-		executor = inputExecutor;
-	}
-}
 
 //A class to wrap requests that come in
 class RequestWrapper
@@ -146,33 +120,7 @@ public class Common
 		
 		return md5;
 	}
-	
-	//Get parameter from a List<ArgumentWrapper> in byte[] format
-	public static byte[] getParam(List<ArgumentWrapper> argWrapper, String type)
-	{
-		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				return argWrapper.get(i).value;
-		}
-		
-		return null;
-	}
-	
-	//Get parameter from a List<ArgumentWrapper> in String format
-	public static String getParamString(List<ArgumentWrapper> argWrapper, String type)
-	{
-		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				return new String(argWrapper.get(i).value);
-		}
-		
-		return "";
-	}
-	
+
 	//Get parameter from a List<ArgumentWrapper> in String format
 		public static String getParamString(HashMap<String,String> args, String key)
 		{
@@ -182,21 +130,7 @@ public class Common
 			
 			return value;
 		}
-	
-	//Get parameter from a List<ArgumentWrapper> in List<String> format
-	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
-	{
-		List<String> returnValues = new ArrayList<String>();
-		
-		for (int i = 0; i < argWrapper.size(); i++)
-		{
-			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
-				returnValues.add(new String(argWrapper.get(i).value));
-		}
-		
-		return returnValues;
-	}
-	
+
 	public static List<String> getParamStringList(HashMap<String,String> args, String key)
 	{
 		List<String> returnValues = new ArrayList<String>();
@@ -356,91 +290,7 @@ public class Common
 		
 
 	}
-	
-	//Parse a generic intent and add to given intent
-	public static Intent parseIntentGeneric(List<ArgumentWrapper> argsArray, Intent intent)
-	{		
-		Intent localIntent = intent;
-		Iterator<ArgumentWrapper> it = argsArray.iterator();
-		
-		//Iterate through arguments
-		while (it.hasNext())
-		{
-			ArgumentWrapper arg = it.next();
-			
-			String key = "";
-			String value = "";
-			
-			try
-			{
-			
-				//Try split value into key:value pair
-				try
-				{
-					String[] split = new String(arg.value).split("=");
-					key = split[0];
-					value = split[1];
-				}
-				catch (Exception e) {}
-				
-				//Parse arguments into Intent
-				if (arg.type.toUpperCase().equals("ACTION"))
-					localIntent.setAction(new String(arg.value));
-				
-				if (arg.type.toUpperCase().equals("DATA"))
-					localIntent.setData(Uri.parse(new String(arg.value)));
-					
-				if (arg.type.toUpperCase().equals("MIME_TYPE"))
-					localIntent.setType(new String(arg.value));
 
-				if (arg.type.toUpperCase().equals("CATEGORY"))
-					localIntent.addCategory(new String(arg.value));
-					
-				if (arg.type.toUpperCase().equals("COMPONENT"))
-					localIntent.setComponent(new ComponentName(key, value));
-					
-				if (arg.type.toUpperCase().equals("FLAGS"))
-					localIntent.setFlags(Integer.parseInt(new String(arg.value)));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-BOOLEAN"))
-					localIntent.putExtra(key, Boolean.parseBoolean(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-BYTE"))
-					localIntent.putExtra(key, Byte.parseByte(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-DOUBLE"))
-					localIntent.putExtra(key, Double.parseDouble(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-FLOAT"))
-					localIntent.putExtra(key, Float.parseFloat(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-INTEGER"))
-					localIntent.putExtra(key, Integer.parseInt(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-LONG"))
-					localIntent.putExtra(key, Long.parseLong(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-SERIALIZABLE"))
-					localIntent.putExtra(key, Serializable.class.cast(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-SHORT"))
-					localIntent.putExtra(key, Short.parseShort(value));
-					
-				if (arg.type.toUpperCase().equals("EXTRA-STRING"))
-					localIntent.putExtra(key, value);
-					
-			}
-			catch (Exception e)
-			{
-				Log.e("mercury", "Error with argument " + arg.type + "--" + new String(arg.value));
-			}
-			
-			
-		}
-		
-		return localIntent;
-	}
-	
 	//Parse a generic intent and add to given intent
 		public static Intent parseIntentGeneric(HashMap<String,String> args, Intent intent)
 		{		
