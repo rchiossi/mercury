@@ -1,12 +1,32 @@
 #include <jni.h>  
 #include <string.h>  
 #include <android/log.h>  
+#include <stdlib.h>
+#include <stdio.h>
   
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR  , "mercury-native", __VA_ARGS__)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define CHUNK_SIZE 4096
+
+char read_buffer[CHUNK_SIZE];
+unsigned read_ptr;
+
+void reset_buffer(FILE* file) {
+	fread(read_buffer,1,CHUNK_SIZE,file);
+	read_ptr = 0;
+}
+
+char read_char(FILE* file) {
+	if (read_ptr == CHUNK_SIZE) {
+		reset_buffer(file);
+	}
+
+	return read_buffer[read_ptr++];
+}
 
 /*
  * Function: Extract Strings from file
@@ -15,7 +35,19 @@ extern "C" {
  * Return: Number of uris found
  */
 int strings_file(const char* path, char** uri_list) {
+	FILE* file = fopen(path,"r");
+
+	if (file == NULL) {
+		LOGE("Error openin file : %s",path);
+		return 0;
+	}
+
+	reset_buffer(file);
+
+
 	LOGE("%s",path);
+
+	fclose(file);
 
 	return 2;
 }
