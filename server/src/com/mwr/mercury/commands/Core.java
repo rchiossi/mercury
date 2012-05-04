@@ -24,7 +24,7 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
+			String path = Common.getParamString(args,"path");
 
 			try
 			{
@@ -47,8 +47,8 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
-			Integer offset = Integer.parseInt(args.get("offset"));
+			String path = Common.getParamString(args,"path");
+			Integer offset = Integer.parseInt(Common.getParamString(args,"offset"));
 
 			// Start sending structure
 			currentSession.startTransmission();
@@ -113,7 +113,7 @@ public class Core extends CommandGroup
 		@Override
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
-			String path = args.get("path");
+			String path = Common.getParamString(args,"path");
 
 			try
 			{
@@ -141,7 +141,7 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
+			String path = Common.getParamString(args,"path");
 
 			try
 			{
@@ -174,7 +174,7 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
+			String path = Common.getParamString(args,"path");
 
 			ArrayList<String> lines = Common.strings(path);
 			Iterator<String> it = lines.iterator();
@@ -202,8 +202,8 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
-			String destination = args.get("destination");
+			String path = Common.getParamString(args,"path");
+			String destination = Common.getParamString(args,"destination");
 
 			// Unzip file
 			boolean success = Common.unzipClassesDex(path, destination);
@@ -223,8 +223,8 @@ public class Core extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get path from arguments
-			String path = args.get("path");
-			byte[] data = args.get("data").getBytes();
+			String path = Common.getParamString(args,"path");
+			byte[] data = Common.getParamString(args,"data").getBytes();
 
 			File file = new File(path);
 			BufferedOutputStream out = null;

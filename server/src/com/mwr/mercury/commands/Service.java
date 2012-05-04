@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 
+import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
 
 public class Service extends CommandGroup
@@ -20,8 +21,8 @@ public class Service extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Assign filter and permissions if they came in the arguments
-			String filter = args.get("filter");
-			String permissions = args.get("permissions");
+			String filter = Common.getParamString(args,"filter");
+			String permissions = Common.getParamString(args,"permissions");
 
 			currentSession.startTransmission();
 			currentSession.startResponse();
@@ -113,10 +114,8 @@ public class Service extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Parse intent
-			// Intent intent = Common.parseIntentGeneric(argsArray, new
-			// Intent());
-			// TODO rchiossi - fix intent parse
-			Intent intent = new Intent();
+			Intent intent = Common.parseIntentGeneric(args, new Intent());
+			
 
 			try
 			{
@@ -141,10 +140,8 @@ public class Service extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Parse intent
-			// Intent intent = Common.parseIntentGeneric(argsArray, new
-			// Intent());
-			// TODO rchiossi - fix intent parse
-			Intent intent = new Intent();
+			Intent intent = Common.parseIntentGeneric(args, new Intent());
+
 
 			try
 			{

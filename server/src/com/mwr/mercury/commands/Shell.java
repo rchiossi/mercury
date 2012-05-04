@@ -17,7 +17,7 @@ public class Shell extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get all the parameters
-			String shellArgs = args.get("args");
+			String shellArgs = Common.getParamString(args,"args");
 
 			if (Common.mercuryShell.write(shellArgs))
 				currentSession.sendFullTransmission("", "");
@@ -34,7 +34,7 @@ public class Shell extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get all the parameters
-			String shellArgs = args.get("args");
+			String shellArgs = Common.getParamString(args,"args");
 
 			String returnValue = "";
 

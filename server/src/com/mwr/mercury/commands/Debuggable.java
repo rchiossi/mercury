@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
+import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
 
 public class Debuggable extends CommandGroup
@@ -17,7 +18,7 @@ public class Debuggable extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Assign filter if one came in the arguments
-			String filter = args.get("filter");
+			String filter = Common.getParamString(args,"filter");
 
 			// String to return at the end of function
 			String returnValue = "";

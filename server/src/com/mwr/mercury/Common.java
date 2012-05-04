@@ -17,6 +17,7 @@ import java.net.SocketException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -60,11 +61,12 @@ class RequestWrapper
 {
 	public String section;
 	public String function;
-	public List<ArgumentWrapper> argsArray;
+	public HashMap<String,String> args;
 }
 
 public class Common
 {	
+	public static String LIST_DELIMITER = "#@#";
 	
 	//Mercury persistent shell
 	public static Shell mercuryShell = null;
@@ -171,6 +173,16 @@ public class Common
 		return "";
 	}
 	
+	//Get parameter from a List<ArgumentWrapper> in String format
+		public static String getParamString(HashMap<String,String> args, String key)
+		{
+			String value = args.get(key);
+			
+			if (value == null) return "";
+			
+			return value;
+		}
+	
 	//Get parameter from a List<ArgumentWrapper> in List<String> format
 	public static List<String> getParamStringList(List<ArgumentWrapper> argWrapper, String type)
 	{
@@ -181,6 +193,17 @@ public class Common
 			if (argWrapper.get(i).type.toUpperCase().equals(type.toUpperCase()))
 				returnValues.add(new String(argWrapper.get(i).value));
 		}
+		
+		return returnValues;
+	}
+	
+	public static List<String> getParamStringList(HashMap<String,String> args, String key)
+	{
+		List<String> returnValues = new ArrayList<String>();
+		
+		for (String item : args.get(key).split(Common.LIST_DELIMITER)) {
+			returnValues.add(item);
+		}		
 		
 		return returnValues;
 	}
@@ -417,6 +440,67 @@ public class Common
 		
 		return localIntent;
 	}
+	
+	//Parse a generic intent and add to given intent
+		public static Intent parseIntentGeneric(HashMap<String,String> args, Intent intent)
+		{		
+			Intent localIntent = intent;
+			
+			for (String arg : args.keySet()) {								
+				String[] split = args.get(arg).split("=");
+				
+				String key = split[0];				
+				String value = split.length == 2? split[0]: split[1];
+				
+				//Parse arguments into Intent
+				if (arg.toUpperCase().equals("ACTION"))
+					localIntent.setAction(args.get(arg));
+				
+				if (arg.toUpperCase().equals("DATA"))
+					localIntent.setData(Uri.parse(args.get(arg)));
+					
+				if (arg.toUpperCase().equals("MIME_TYPE"))
+					localIntent.setType(args.get(arg));
+
+				if (arg.toUpperCase().equals("CATEGORY"))
+					localIntent.addCategory(args.get(arg));
+					
+				if (arg.toUpperCase().equals("COMPONENT"))
+					localIntent.setComponent(new ComponentName(key, value));
+					
+				if (arg.toUpperCase().equals("FLAGS"))
+					localIntent.setFlags(Integer.parseInt(args.get(arg)));
+					
+				if (arg.toUpperCase().equals("EXTRA-BOOLEAN"))
+					localIntent.putExtra(key, Boolean.parseBoolean(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-BYTE"))
+					localIntent.putExtra(key, Byte.parseByte(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-DOUBLE"))
+					localIntent.putExtra(key, Double.parseDouble(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-FLOAT"))
+					localIntent.putExtra(key, Float.parseFloat(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-INTEGER"))
+					localIntent.putExtra(key, Integer.parseInt(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-LONG"))
+					localIntent.putExtra(key, Long.parseLong(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-SERIALIZABLE"))
+					localIntent.putExtra(key, Serializable.class.cast(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-SHORT"))
+					localIntent.putExtra(key, Short.parseShort(value));
+					
+				if (arg.toUpperCase().equals("EXTRA-STRING"))
+					localIntent.putExtra(key, value);
+			}
+			
+			return localIntent;
+		}
 
 	//Extract the src file to dest - return success
 	public static boolean unzipClassesDex(String src, String dest)

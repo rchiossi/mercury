@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
 
 public class Activity extends CommandGroup
@@ -19,7 +20,7 @@ public class Activity extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Assign filter if one came in the arguments
-			String filter = args.get("filter");
+			String filter = Common.getParamString(args,"filter");
 
 			currentSession.startTransmission();
 			currentSession.startResponse();
@@ -82,7 +83,7 @@ public class Activity extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Assign filter if one came in the arguments
-			String packageName = args.get("packageName");
+			String packageName = Common.getParamString(args,"packageName");
 
 			Intent intent = currentSession.applicationContext
 					.getPackageManager().getLaunchIntentForPackage(packageName);
@@ -103,9 +104,7 @@ public class Activity extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Parse intent
-			// TODO rchiossi - fix parse
-			Intent intent = new Intent(); // Common.parseIntentGeneric(argsArray,
-											// new Intent());
+			Intent intent = Common.parseIntentGeneric(args, new Intent());
 
 			try
 			{
@@ -151,9 +150,7 @@ public class Activity extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Parse intent
-			// TODO rchiossi - fix parse
-			Intent intent = new Intent(); // Common.parseIntentGeneric(argsArray,
-											// new Intent());
+			Intent intent = Common.parseIntentGeneric(args, new Intent());
 
 			try
 			{

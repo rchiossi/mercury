@@ -29,7 +29,7 @@ public class Provider extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			//Get list of columns
-			ArrayList<String> columns = Common.getColumns(currentSession.applicationContext.getContentResolver(), args.get("uri"), null);
+			ArrayList<String> columns = Common.getColumns(currentSession.applicationContext.getContentResolver(), Common.getParamString(args,"uri"), null);
 			
 			//If there are no columns, then the URI is invalid
 			if (columns.size() == 0)
@@ -59,10 +59,9 @@ public class Provider extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			try
-			{
-				//TODO rchiossi - fix string list
-				List<String> selectionArgs = new ArrayList<String>(); //Common.getParamStringList(argsArray, "selectionArgs");
-		        String where = args.get("where");
+			{				
+				List<String> selectionArgs = Common.getParamStringList(args, "selectionArgs");
+		        String where = Common.getParamString(args,"where");
 
 		        //Put selectionArgs in an array
 				String[] selectionArgsArray = null;
@@ -84,7 +83,7 @@ public class Provider extends CommandGroup
 		        ContentResolver r = currentSession.applicationContext.getContentResolver();
 
 		        //Issue delete command
-		        int rowsDeleted = r.delete(Uri.parse(args.get("Uri")), (where.length() > 0)? where : null, selectionArgsArray);
+		        int rowsDeleted = r.delete(Uri.parse(Common.getParamString(args,"Uri")), (where.length() > 0)? where : null, selectionArgsArray);
 		       
 		        //Send response
 		        currentSession.sendFullTransmission(Integer.toString(rowsDeleted) + " rows have been deleted", "");
@@ -107,8 +106,8 @@ public class Provider extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			//Assign filter and permissions if they came in the arguments	
-			String filter = args.get("filter");
-			String permissions = args.get("permissions");
+			String filter = Common.getParamString(args,"filter");
+			String permissions = Common.getParamString(args,"permissions");
 			
 			currentSession.startTransmission();
 			currentSession.startResponse();
@@ -218,35 +217,33 @@ public class Provider extends CommandGroup
 			try
 			{					        
 		        ContentValues contentvalues = new ContentValues();
-		        
-		        //TODO rchiossi - fix string list
-		        
+	        
 		        //Place values into contentvalue structure
-		        List<String> strings = new ArrayList<String>(); //Common.getParamStringList(argsArray, "string");
+		        List<String> strings = Common.getParamStringList(args, "string");
 		        if (strings != null)
 			        contentvalues.putAll(Common.listToContentValues(strings, "string"));
 		        
-		        List<String> booleans = new ArrayList<String>(); //Common.getParamStringList(argsArray, "boolean");
+		        List<String> booleans = Common.getParamStringList(args, "boolean");
 		        if (booleans != null)
 			        contentvalues.putAll(Common.listToContentValues(booleans, "boolean"));
 		        
-		        List<String> integers = new ArrayList<String>(); //Common.getParamStringList(argsArray, "integer");
+		        List<String> integers = Common.getParamStringList(args, "integer");
 		        if (integers != null)
 			        contentvalues.putAll(Common.listToContentValues(integers, "integer"));
 		        
-		        List<String> doubles = new ArrayList<String>(); //Common.getParamStringList(argsArray, "double");
+		        List<String> doubles = Common.getParamStringList(args, "double");
 		        if (doubles != null)
 			        contentvalues.putAll(Common.listToContentValues(doubles, "double"));
 		        
-		        List<String> floats = new ArrayList<String>(); //Common.getParamStringList(argsArray, "float");
+		        List<String> floats = Common.getParamStringList(args, "float");
 		        if (floats != null)
 			        contentvalues.putAll(Common.listToContentValues(floats, "float"));
 		        
-		        List<String> longs = new ArrayList<String>(); //Common.getParamStringList(argsArray, "long");
+		        List<String> longs = Common.getParamStringList(args, "long");
 		        if (longs != null)
 			        contentvalues.putAll(Common.listToContentValues(longs, "long"));
 		        
-		        List<String> shorts = new ArrayList<String>(); //Common.getParamStringList(argsArray, "short");
+		        List<String> shorts = Common.getParamStringList(args, "short");
 		        if (shorts != null)
 			        contentvalues.putAll(Common.listToContentValues(shorts, "short"));
 
@@ -254,7 +251,7 @@ public class Provider extends CommandGroup
 		        ContentResolver r = currentSession.applicationContext.getContentResolver();
 		        
 		        //Issue insert command
-		        Uri c = r.insert(Uri.parse(new String(args.get("Uri"))), contentvalues);
+		        Uri c = r.insert(Uri.parse(new String(Common.getParamString(args,"Uri"))), contentvalues);
 		       
 		        currentSession.sendFullTransmission(c.toString(), "");
 	        
@@ -283,12 +280,11 @@ public class Provider extends CommandGroup
 		        ContentResolver r = currentSession.applicationContext.getContentResolver();
 		        
 		        //Get all the parameters
-		        //TODO rchiossi - fix ArrayList
-		        List<String> projection = new ArrayList<String>(); //Common.getParamStringList(argsArray, "projection");
-		        String selection = args.get("selection");
-		        List<String> selectionArgs = new ArrayList<String>(); //>Common.getParamStringList(argsArray, "selectionArgs");
-		        String sortOrder = args.get("sortOrder");
-		        String showColumns = args.get("showColumns");
+		        List<String> projection = Common.getParamStringList(args, "projection");
+		        String selection = Common.getParamString(args,"selection");
+		        List<String> selectionArgs = Common.getParamStringList(args, "selectionArgs");
+		        String sortOrder = Common.getParamString(args,"sortOrder");
+		        String showColumns = Common.getParamString(args,"showColumns");
 		        
 		        //Put projection in an array
 		        String[] projectionArray = null;
@@ -323,7 +319,7 @@ public class Provider extends CommandGroup
 				}
 		        
 		        //Issue query
-		        Cursor c = r.query(Uri.parse(args.get("Uri")), projectionArray, (selection.length() > 0)? selection : null, selectionArgsArray, (sortOrder.length() > 0)? sortOrder : null);
+		        Cursor c = r.query(Uri.parse(Common.getParamString(args,"Uri")), projectionArray, (selection.length() > 0)? selection : null, selectionArgsArray, (sortOrder.length() > 0)? sortOrder : null);
 		        
 		        //Check if query failed
 		        if (c != null)
@@ -331,7 +327,7 @@ public class Provider extends CommandGroup
 			        //Display the columns
 			        if (showColumns.length() == 0 || showColumns.toUpperCase().contains("TRUE"))
 			        {
-			        	ArrayList<String> cols = Common.getColumns(r, args.get("Uri"), projectionArray);
+			        	ArrayList<String> cols = Common.getColumns(r, Common.getParamString(args,"Uri"), projectionArray);
 			        	Iterator<String> it = cols.iterator();
 			        	String columns = "";
 			        	
@@ -405,7 +401,7 @@ public class Provider extends CommandGroup
         	
             try
             {
-                Uri uri = Uri.parse(args.get("Uri"));
+                Uri uri = Uri.parse(Common.getParamString(args,"Uri"));
                 ContentResolver r = currentSession.applicationContext.getContentResolver();
                 InputStream is = r.openInputStream(uri);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -451,38 +447,37 @@ public class Provider extends CommandGroup
 			{					        
 		        ContentValues contentvalues = new ContentValues();
 		        
-		        //TODO rchiossi - fix string list
 		        //Place values into contentvalue structure
-		        List<String> strings = new ArrayList<String>(); //Common.getParamStringList(argsArray, "string");
+		        List<String> strings = Common.getParamStringList(args, "string");
 		        if (strings != null)
 			        contentvalues.putAll(Common.listToContentValues(strings, "string"));
 		        
-		        List<String> booleans = new ArrayList<String>(); //Common.getParamStringList(argsArray, "boolean");
+		        List<String> booleans = Common.getParamStringList(args, "boolean");
 		        if (booleans != null)
 			        contentvalues.putAll(Common.listToContentValues(booleans, "boolean"));
 		        
-		        List<String> integers = new ArrayList<String>(); //Common.getParamStringList(argsArray, "integer");
+		        List<String> integers = Common.getParamStringList(args, "integer");
 		        if (integers != null)
 			        contentvalues.putAll(Common.listToContentValues(integers, "integer"));
 		        
-		        List<String> doubles = new ArrayList<String>(); //Common.getParamStringList(argsArray, "double");
+		        List<String> doubles = Common.getParamStringList(args, "double");
 		        if (doubles != null)
 			        contentvalues.putAll(Common.listToContentValues(doubles, "double"));
 		        
-		        List<String> floats = new ArrayList<String>(); //Common.getParamStringList(argsArray, "float");
+		        List<String> floats = Common.getParamStringList(args, "float");
 		        if (floats != null)
 			        contentvalues.putAll(Common.listToContentValues(floats, "float"));
 		        
-		        List<String> longs = new ArrayList<String>(); //Common.getParamStringList(argsArray, "long");
+		        List<String> longs = Common.getParamStringList(args, "long");
 		        if (longs != null)
 			        contentvalues.putAll(Common.listToContentValues(longs, "long"));
 		        
-		        List<String> shorts = new ArrayList<String>(); //Common.getParamStringList(argsArray, "short");
+		        List<String> shorts = Common.getParamStringList(args, "short");
 		        if (shorts != null)
 			        contentvalues.putAll(Common.listToContentValues(shorts, "short"));
 
-		        List<String> selectionArgs = new ArrayList<String>(); //Common.getParamStringList(argsArray, "selectionArgs");
-		        String where = args.get("where");
+		        List<String> selectionArgs = Common.getParamStringList(args, "selectionArgs");
+		        String where = Common.getParamString(args,"where");
 
 		        //Put selectionArgs in an array
 				String[] selectionArgsArray = null;
@@ -504,7 +499,7 @@ public class Provider extends CommandGroup
 		        ContentResolver r = currentSession.applicationContext.getContentResolver();
 		        
 		        //Issue update command
-		        Integer c = r.update(Uri.parse(args.get("Uri")), contentvalues, (where.length() > 0)? where : null, selectionArgsArray);
+		        Integer c = r.update(Uri.parse(Common.getParamString(args,"Uri")), contentvalues, (where.length() > 0)? where : null, selectionArgsArray);
 	        
 		        //Send response
 		        currentSession.sendFullTransmission(c.toString() + " rows have been updated.", "");

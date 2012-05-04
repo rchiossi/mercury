@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
 
+import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
 
 public class Packages extends CommandGroup
@@ -23,7 +24,7 @@ public class Packages extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Get all the parameters
-			String packageName = args.get("packageName");
+			String packageName = Common.getParamString(args,"packageName");
 
 			try
 			{
@@ -111,8 +112,8 @@ public class Packages extends CommandGroup
 			currentSession.startData();
 
 			// Assign filter and permissions if they came in the arguments
-			String filter = args.get("filter");
-			String permissions = args.get("permissions");
+			String filter = Common.getParamString(args,"filter");
+			String permissions = Common.getParamString(args,"permissions");
 
 			// Get all packages from packagemanager
 			PackageManager pm = currentSession.applicationContext
@@ -231,7 +232,7 @@ public class Packages extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			// Assign filter and permissions if they came in the arguments
-			String packageName = args.get("packageName");
+			String packageName = Common.getParamString(args,"packageName");
 
 			// Get all packages from packagemanager
 			PackageManager pm = currentSession.applicationContext
@@ -276,7 +277,7 @@ public class Packages extends CommandGroup
 			currentSession.startData();
 
 			// Get all the parameters
-			String filter = args.get("uid");
+			String filter = Common.getParamString(args,"uid");
 
 			// Get all packages from packagemanager
 			PackageManager pm = currentSession.applicationContext

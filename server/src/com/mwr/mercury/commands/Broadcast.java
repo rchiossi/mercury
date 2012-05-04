@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
 
 public class Broadcast extends CommandGroup
@@ -19,7 +20,7 @@ public class Broadcast extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			//Assign filter if one came in the arguments
-			String filter = args.get("filter");
+			String filter = Common.getParamString(args,"filter");
 			
 			currentSession.startTransmission();
 			currentSession.startResponse();
@@ -68,9 +69,7 @@ public class Broadcast extends CommandGroup
 		public void execute(HashMap<String, String> args, Session currentSession)
 		{
 			//Parse intent
-			//Intent intent = Common.parseIntentGeneric(argsArray, new Intent());
-			//TODO rchiossi fix parse
-			Intent intent = new Intent();
+			Intent intent = Common.parseIntentGeneric(args, new Intent());			
 			
 			try
 			{

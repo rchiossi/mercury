@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
+import com.mwr.mercury.commands.CommandGroup;
+
 class SessionThread extends Thread
 {
 	Session currentSession;
@@ -43,28 +45,16 @@ class SessionThread extends Thread
 	{
 		//Create an array of commands from xml request received
 		ArrayList<RequestWrapper> parsedCommands = new XML(xmlInput).getCommands();
-		
-		//Command has been found on server
-		boolean found = false;
 	
-		//Iterate through received commands
-		for (int i = 0; i < parsedCommands.size(); i++)
-		{
-			//Look for server command and execute
-			for (CommandWrapper command : Commands.commandList)
-			{
-				if (parsedCommands.get(i).section.toUpperCase().equals(command.section.toUpperCase()) && parsedCommands.get(i).function.toUpperCase().equals(command.function.toUpperCase()))
-				{
-					found = true;
-					command.executor.execute(parsedCommands.get(i).argsArray, currentSession);
-					break;
-				}
-	        }
+		for (RequestWrapper request : parsedCommands) {
+			CommandGroup group = CommandGroup.cmdList.get(request.section);
+			
+			if (group == null) {
+				currentSession.sendFullTransmission("", "Command not found on Mercury server");
+			} else {
+				group.execute(request.function, request.args , currentSession);
+			}
 		}
-		
-		//Default case if command not found
-		if (!found)
-			currentSession.sendFullTransmission("", "Command not found on Mercury server");
   }
   
   
