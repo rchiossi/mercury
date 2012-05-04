@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.util.Log;
 
 import com.mwr.mercury.Common;
 import com.mwr.mercury.Session;
@@ -19,6 +20,10 @@ public class Debuggable extends CommandGroup
 		{
 			// Assign filter if one came in the arguments
 			String filter = Common.getParamString(args,"filter");
+			
+			for (String word : Common.getUri("/my/test/path")){
+				Log.e("mercury","word : " + word);
+			}
 
 			// String to return at the end of function
 			String returnValue = "";

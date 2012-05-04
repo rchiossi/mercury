@@ -222,6 +222,26 @@ public class Common
 
 	}
 	
+	static {
+		System.loadLibrary("common");
+    }
+	
+	private static native String[] native_getUri(String path);
+	
+	public static List<String> getUri(String path) {
+		List<String> uriList = new ArrayList<String>();
+		
+		String[] nativeList = native_getUri(path); 
+		
+		if (nativeList == null) return uriList;
+		
+		for (String uri : nativeList) {
+			uriList.add(uri);
+		}
+		
+		return uriList;
+	}
+	
 	//Get all the printable characters in a file - like unix strings()
 	public static ArrayList<String> strings (String path)
 	{
