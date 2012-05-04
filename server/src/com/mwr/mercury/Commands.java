@@ -33,20 +33,18 @@ import android.os.PatternMatcher;
 import android.util.Base64;
 
 public class Commands
-{
-
+{	
 	public static final ArrayList<CommandWrapper> commandList;
 	
-	static
-	{
+	static {	
 		//Initialise list of commands
 		commandList = new ArrayList<CommandWrapper>();
-		
-		
-		/*************************************************************************************/
-		/** Command section - CORE
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - CORE
+	/*************************************************************************************/	
+	static {
 		//core.ping() - returns "pong"
 		commandList.add(new CommandWrapper("core", "ping", new Executor()
 		{
@@ -328,13 +326,12 @@ public class Commands
 				
 			}
 		}));
-		
-		
-		
-		/*************************************************************************************/
-		/** Command section - DEBUGGABLE
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - DEBUGGABLE
+	/*************************************************************************************/	
+	static 	{
 		//debuggable.info(path) - return info on debuggable apps
 		commandList.add(new CommandWrapper("debuggable", "info", new Executor()
 		{
@@ -381,13 +378,12 @@ public class Commands
 				currentSession.sendFullTransmission(returnValue.trim(), "");
 			}
 		}));
-		
-		
-		
-		/*************************************************************************************/
-		/** Command section - ACTIVITY
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - ACTIVITY
+	/*************************************************************************************/	
+	static {
 		//activity.info(filter) - returns info on exported activities
 		commandList.add(new CommandWrapper("activity", "info", new Executor()
 		{
@@ -532,13 +528,12 @@ public class Commands
 				
 			}
 		}));
-		
-		
-		
-		/*************************************************************************************/
-		/** Command section - BROADCAST
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - BROADCAST
+	/*************************************************************************************/	
+	static {
 		//broadcast.info(filter) - returns info on exported broadcast receivers
 		commandList.add(new CommandWrapper("broadcast", "info", new Executor()
 		{
@@ -617,11 +612,12 @@ public class Commands
 			}
 		}));
 		
-		
-		/*************************************************************************************/
-		/** Command section - SERVICE
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - SERVICE
+	/*************************************************************************************/		
+	static	{
 		//service.info(filter) - returns info on exported services
 		commandList.add(new CommandWrapper("service", "info", new Executor()
 		{
@@ -756,11 +752,12 @@ public class Commands
 			}
 		}));
 		
-		
-		/*************************************************************************************/
-		/** Command section - PROVIDER
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - PROVIDER
+	/*************************************************************************************/
+	static 	{
 		//provider.info(filter, permissions) - returns info on content providers
 		commandList.add(new CommandWrapper("provider", "info", new Executor()
 		{
@@ -1277,13 +1274,13 @@ public class Commands
 				currentSession.endTransmission();
 				
 			}
-		}));
-		
-		
-		/*************************************************************************************/
-		/** Command section - PACKAGES
-		/*************************************************************************************/
-		
+		}));		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - PACKAGES
+	/*************************************************************************************/	
+	static {
 		//packages.info(filter) - return info on packages
 		commandList.add(new CommandWrapper("packages", "info", new Executor()
 		{
@@ -1585,13 +1582,12 @@ public class Commands
 			}
 		}));
 		
-		
-		
-		
-		/*************************************************************************************/
-		/** Command section - SHELL
-		/*************************************************************************************/
-		
+	}
+	
+	/*************************************************************************************/
+	/** Command section - SHELL
+	/*************************************************************************************/
+	static	{
 		//shell.execute(args) - perform shell command and give result
 		commandList.add(new CommandWrapper("shell", "executeSingleCommand", new Executor()
 		{
@@ -1697,17 +1693,7 @@ public class Commands
 				currentSession.sendFullTransmission(Common.mercuryShell.read(), "");
 				
 			}
-		}));
-		
-		
-		
-		
-
-		
-		
-		
-		
-		
+		}));		
 	}
 	
 }
