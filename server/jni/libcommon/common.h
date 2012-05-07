@@ -12,7 +12,7 @@ extern "C" {
  * Method:    native_strings
  * Signature: (Ljava/lang/String;)[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_mwr_mercury_Common_native_1strings
+JNIEXPORT jstring JNICALL Java_com_mwr_mercury_Common_native_1strings
   (JNIEnv *, jclass, jstring);
 
 #ifdef __cplusplus

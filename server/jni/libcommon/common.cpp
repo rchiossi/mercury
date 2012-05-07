@@ -13,14 +13,14 @@ extern "C" {
 #define CHUNK_SIZE 16348
 #define MAX_STR_SIZE 4096
 #define MIN_STR_SIZE 4
-#define LIST_START_SIZE 64
+#define LIST_START_SIZE 4096
 
 char read_buffer[CHUNK_SIZE];
 unsigned bytes_in_buffer;
 unsigned read_ptr;
 unsigned eof;
 
-char** uri_list = NULL;
+char* uri_list = NULL;
 
 void reset_buffer(FILE* file) {
 	bytes_in_buffer = fread(read_buffer,1,CHUNK_SIZE,file);
@@ -54,15 +54,19 @@ int strings_file(const char* path) {
 	unsigned csize = 0;
 
 	char buffer[MAX_STR_SIZE];
-	char c_byte;
+	char* next_str = uri_list;
+	unsigned char c_byte;
 	unsigned length;
+
+	unsigned num_strings = 0;
 
 	if (file == NULL) {
 		LOGE("Error openin file : %s",path);
 		return 0;
 	}
 
-	uri_list = (char**) malloc(sizeof(char*)*msize);
+	uri_list = (char*) malloc(sizeof(char)*msize);
+	memset(uri_list,0x0,msize);
 
 	reset_buffer(file);
 
@@ -70,15 +74,15 @@ int strings_file(const char* path) {
 	length = 0;
 	while (!eof) {
 		/* check if character is printable */
-		while (0x20 <= c_byte && c_byte <= 0x7E && length < MAX_STR_SIZE - 1 && !eof) {
+		while (0x20 <= (unsigned) c_byte && (unsigned) c_byte <= 0x7E && length < MAX_STR_SIZE - 1 && !eof) {
 			buffer[length++] = c_byte;
 			c_byte = read_char(file);
 		}
 
 		if (length >= MIN_STR_SIZE) {
 			/* grow list */
-			if (csize == msize) {
-				uri_list = (char**) realloc(uri_list, sizeof(char*)*msize*2);
+			if (csize+length >= msize) {
+				uri_list = (char*) realloc(uri_list, sizeof(char)*msize*2);
 				if (uri_list == NULL) {
 					LOGE("Error: out of memory!");
 					return -1;
@@ -86,28 +90,23 @@ int strings_file(const char* path) {
 				msize *= 2;
 			}
 
-			/* allocate new string */
-			uri_list[csize] = (char*) malloc(sizeof(char)*length+1);
+			next_str = &uri_list[csize];
+			strncpy(next_str,buffer,length);
+			next_str[length] = '\n';
 
-			if (uri_list[csize] == NULL) {
-				LOGE("Error: out of memory!");
-				return -1;
-			}
+			csize+=length+1;
 
-			strncpy(uri_list[csize],buffer,length);
-			uri_list[csize][length] = '\x00';
-
-			length = 0;
-
-			csize++;
+			num_strings++;
 		}
+
+		length = 0;
 
 		c_byte = read_char(file);
 	}
 
 	fclose(file);
 
-	return csize;
+	return num_strings;
 }
 
 /*
@@ -115,7 +114,7 @@ int strings_file(const char* path) {
  * Method:    native_strings
  * Signature: (Ljava/lang/String;)[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_mwr_mercury_Common_native_1strings
+JNIEXPORT jstring JNICALL Java_com_mwr_mercury_Common_native_1strings
   (JNIEnv *env, jclass obj, jstring jpath)
 {
 	const char *path = env->GetStringUTFChars(jpath, 0);
@@ -124,18 +123,9 @@ JNIEXPORT jobjectArray JNICALL Java_com_mwr_mercury_Common_native_1strings
 	num = strings_file(path);
 
 	env->ReleaseStringUTFChars(jpath, path);
-	jobjectArray ret = (jobjectArray)env->NewObjectArray(num, env->FindClass("java/lang/String"), env->NewStringUTF(""));
+	jstring ret = env->NewStringUTF(uri_list);
 
-	for(int i=0;i<num;i++) {
-		jstring str = env->NewStringUTF(uri_list[i]);
-		env->SetObjectArrayElement(ret,i,str);
-		env->DeleteLocalRef(str);
-	}
-
-	for (int i=0;i<num;i++)
-		free(uri_list[i]);
 	free(uri_list);
-
 
 	return ret;
 }
