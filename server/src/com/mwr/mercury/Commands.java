@@ -286,7 +286,9 @@ public class Commands
 				//Get path from arguments
 				String path = Common.getParamString(argsArray, "path");
 				
+				//Get all strings from the fiel
 				ArrayList<String> lines = Common.strings(path);
+			
 				Iterator<String> it = lines.iterator();
 				
 				currentSession.startTransmission();
@@ -300,7 +302,6 @@ public class Commands
 				currentSession.noError();
 				currentSession.endResponse();
 				currentSession.endTransmission();
-				
 			}
 		}));
 		
@@ -313,7 +314,7 @@ public class Commands
 			public void execute(List<ArgumentWrapper> argsArray, Session currentSession)
 			{
 				// TODO Auto-generated method stub
-				
+								
 				//Get path from arguments
 				String path = Common.getParamString(argsArray, "path");
 				String destination = Common.getParamString(argsArray, "destination");
@@ -324,8 +325,7 @@ public class Commands
 				if (success)
 					currentSession.sendFullTransmission("", "");
 				else
-					currentSession.sendFullTransmission("", "Unzip failed");
-				
+					currentSession.sendFullTransmission("", "Unzip failed");				
 			}
 		}));
 		
@@ -1276,6 +1276,45 @@ public class Commands
 				
 				currentSession.endTransmission();
 				
+			}
+		}));
+		
+		//core.strings(path) - returns a list of readable chars in a file
+		commandList.add(new CommandWrapper("provider", "finduri", new Executor()
+		{
+			
+			@Override
+			public void execute(List<ArgumentWrapper> argsArray, Session currentSession)
+			{		
+				//Get path from arguments
+				String path = Common.getParamString(argsArray, "path");
+				
+				//Get all strings from the file
+				ArrayList<String> fullLines = Common.strings(path);
+				
+				//Filter URI 								
+				ArrayList<String> lines = new ArrayList<String>();
+				
+				for (String line : fullLines) {
+					if (line.toUpperCase().contains("CONTENT://") &&
+							!line.toUpperCase().equals("CONTENT://")) {
+						lines.add(line);
+					}
+				}
+								
+				Iterator<String> it = lines.iterator();
+				
+				currentSession.startTransmission();
+				currentSession.startResponse();
+				currentSession.startData();
+				
+				while (it.hasNext())
+					currentSession.send(it.next() + "\n", true); //Send this with newline
+				
+				currentSession.endData();
+				currentSession.noError();
+				currentSession.endResponse();
+				currentSession.endTransmission();				
 			}
 		}));
 		

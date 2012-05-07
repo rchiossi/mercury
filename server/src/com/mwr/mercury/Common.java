@@ -269,92 +269,22 @@ public class Common
 		System.loadLibrary("common");
     }
 	
-	private static native String[] native_strings(String path);
+	private static native String native_strings(String path);
 	
 	public static ArrayList<String> strings(String path) {
-		
-		ArrayList<String> uriList = new ArrayList<String>();
-						
-		String[] nativeList = native_strings(path); 
-		
-		if (nativeList == null) return uriList;
-		
-		for (String uri : nativeList) {
-			uriList.add(uri);
-		}
-				
-		return uriList;
-	}
-	
-	//Get all the printable characters in a file - like unix strings()
-	public static ArrayList<String> strings_java (String path)
-	{
 		ArrayList<String> lines = new ArrayList<String>();
-		
-		//Buffer where string is formulated
-		String buffer = "";
-		
-		//Keep reading chars
-		boolean loop = true;
-		
-		//File
-		InputStream is = null;
-		
-		try
-		{
-			//Open file
-			File file = new File(path);
-			if (file.exists())
-			{
-				is = new FileInputStream(file);
 				
-				//Read file byte for byte
-				while (loop)
-				{
-					int tmp = is.read();
-					
-					//Is it a printable character - Printable chars = 32 - 126
-					if ((tmp >= 32) && (tmp <= 126))
-					{
-						buffer += (char) tmp;
-					}
-					else
-					{
-						//If >= 4 readable chars in a row - then add as a string
-						if (buffer.length() >= 4)
-						{
-							lines.add(buffer);
-						}
-						
-						//Blank the buffer
-						buffer = "";
-					}
-					
-					//If read char is -1 then the eof has been reached
-					if (tmp == -1)
-						loop = false;
-						
-				}
+		String[] nativeList = native_strings(path).split("\n");
+				
+		if (nativeList != null) {		
+			for (String uri : nativeList) {
+				lines.add(uri);
 			}
-		}
-		catch(IOException e)
-		{
-			return new ArrayList<String>();
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch(Exception e) {}
 		}
 		
 		return lines;
-		
-
 	}
-	
+			
 	//Parse a generic intent and add to given intent
 	public static Intent parseIntentGeneric(List<ArgumentWrapper> argsArray, Intent intent)
 	{		
