@@ -265,8 +265,29 @@ public class Common
 
 	}
 	
+	static {
+		System.loadLibrary("common");
+    }
+	
+	private static native String[] native_strings(String path);
+	
+	public static ArrayList<String> strings(String path) {
+		
+		ArrayList<String> uriList = new ArrayList<String>();
+						
+		String[] nativeList = native_strings(path); 
+		
+		if (nativeList == null) return uriList;
+		
+		for (String uri : nativeList) {
+			uriList.add(uri);
+		}
+				
+		return uriList;
+	}
+	
 	//Get all the printable characters in a file - like unix strings()
-	public static ArrayList<String> strings (String path)
+	public static ArrayList<String> strings_java (String path)
 	{
 		ArrayList<String> lines = new ArrayList<String>();
 		
