@@ -271,7 +271,7 @@ public class Common
 	
 	private static native String native_strings(String path);
 	
-	public static ArrayList<String> strings(String path) {
+		public static ArrayList<String> strings(String path) {
 		ArrayList<String> lines = new ArrayList<String>();
 				
 		String[] nativeList = native_strings(path).split("\n");

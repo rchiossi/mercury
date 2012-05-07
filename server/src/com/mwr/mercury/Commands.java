@@ -286,9 +286,7 @@ public class Commands
 				//Get path from arguments
 				String path = Common.getParamString(argsArray, "path");
 				
-				//Get all strings from the fiel
 				ArrayList<String> lines = Common.strings(path);
-			
 				Iterator<String> it = lines.iterator();
 				
 				currentSession.startTransmission();
@@ -302,6 +300,7 @@ public class Commands
 				currentSession.noError();
 				currentSession.endResponse();
 				currentSession.endTransmission();
+				
 			}
 		}));
 		
@@ -314,7 +313,7 @@ public class Commands
 			public void execute(List<ArgumentWrapper> argsArray, Session currentSession)
 			{
 				// TODO Auto-generated method stub
-								
+				
 				//Get path from arguments
 				String path = Common.getParamString(argsArray, "path");
 				String destination = Common.getParamString(argsArray, "destination");
@@ -325,7 +324,8 @@ public class Commands
 				if (success)
 					currentSession.sendFullTransmission("", "");
 				else
-					currentSession.sendFullTransmission("", "Unzip failed");				
+					currentSession.sendFullTransmission("", "Unzip failed");
+				
 			}
 		}));
 		
@@ -1279,7 +1279,7 @@ public class Commands
 			}
 		}));
 		
-		//core.strings(path) - returns a list of readable chars in a file
+		//provider.finduri(path) - returns a list of uris in the target
 		commandList.add(new CommandWrapper("provider", "finduri", new Executor()
 		{
 			
