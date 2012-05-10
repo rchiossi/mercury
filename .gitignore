@@ -1,2 +1,6 @@
 *.pyc
 *.class
+*/bin/
+*/obj/*
+!server/bin/mercury-server.apk
+
