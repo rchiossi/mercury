@@ -62,7 +62,21 @@ This method is called after the line has been input but before
 it has been interpreted. If you want to modifdy the input line
 before execution (for example, variable substitution) do it here.
         """
-        self._hist += [ line.strip() ]
+        line = line.strip()
+        self._hist += [ line ]
+
+        #Allow for "shell-like" navigation ('ls' and 'cd')
+        if line.startswith("ls",0, 2):
+            line = line.replace("ls","?",1)
+        elif line.startswith("cd",0,2):
+            tokens = line.split(" ")
+            if len(tokens) == 1:
+                line = "back"
+            elif tokens[1] == "..":
+                line = "back"
+            else:
+                line = " ".join(tokens[1:])
+
         return line
 
     def postcmd(self, stop, line):
